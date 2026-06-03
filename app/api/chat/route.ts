@@ -36,6 +36,8 @@ También conoces los números de teléfono alternativos de llamada a la policía
 - Tránsito: 121
 - Cruz Roja / Ambulancias: 123 o 2204990
 
+Además del encriptado, mapa y EPIs, puedes responder de manera general e inteligente a cualquier pregunta del usuario relacionada con la seguridad ciudadana en Bolivia, leyes nacionales (como la Ley 264 y Ley 348), consejos de prevención de delitos y qué hacer en caso de robos o accidentes.
+
 Si el usuario pregunta por el número policial o la EPI de una zona específica (por ejemplo, Queru Queru, Cala Cala, Zona Sur o Central), debes indicarle a qué EPI corresponde de tu lista y darle su número telefónico directo. Responde de forma concisa, formal y útil.`;
 
 /**
@@ -86,7 +88,62 @@ function contextualNlpFallback(lastMsg: string): string {
       'Comuníquese directamente a este número para un despacho veloz de patrullas en la zona oeste.';
   }
 
-  // 2. Vigilante Ciudadano Info Queries
+  // 2. Generic nearest stations query
+  if (
+    text.includes('cercan') ||
+    text.includes('donde') ||
+    text.includes('dónde') ||
+    text.includes('ubicacion') ||
+    text.includes('ubicación') ||
+    text.includes('direccion') ||
+    text.includes('dirección') ||
+    text.includes('estacion') ||
+    text.includes('estación') ||
+    text.includes('epi')
+  ) {
+    return '🏢 **Estaciones Policiales Integrales (EPI) por Zona (Cochabamba):**\n\n' +
+      '• **EPI Norte:** Queru Queru, Cala Cala, Pacata Baja. 📞 **444-1234**\n' +
+      '• **EPI Central:** Casco Viejo, Centro, El Prado. 📞 **444-0110**\n' +
+      '• **EPI Sur:** Alalay, Jaihuayco, Valle Hermoso. 📞 **444-5678**\n' +
+      '• **EPI Este:** Pacata Alta, Quintanilla, Chafra. 📞 **444-8765**\n' +
+      '• **EPI Oeste:** Coña Coña, Sarco, Villa Galindo. 📞 **444-4321**\n\n' +
+      '💡 Si tiene una emergencia activa en su ubicación, le aconsejamos presionar el botón rojo de **"Reportar Emergencia"** en la página principal para geolocalizar y enviar ayuda inmediatamente desde la EPI más cercana.';
+  }
+
+  // 3. Question helper menu
+  if (
+    text.includes('pregunta') ||
+    text.includes('que puedo') ||
+    text.includes('qué puedo') ||
+    text.includes('ayuda') ||
+    text.includes('menu') ||
+    text.includes('menú') ||
+    text.includes('opciones')
+  ) {
+    return '🤖 **¿En qué puedo guiarte hoy? Como tu asistente de seguridad, puedes preguntarme sobre:**\n\n' +
+      '• **EPIs zonales y números:** escribe "Queru Queru", "Zona Sur", "Centro", "Este" u "Oeste".\n' +
+      '• **El encriptado de reportes:** escribe "cifrado", "seguro" o "privacidad".\n' +
+      '• **La geolocalización de patrullas:** escribe "mapa" o "patrullas".\n' +
+      '• **Leyes de seguridad ciudadana:** escribe "leyes", "Ley 264", "Ley 348" o "Código Penal".\n' +
+      '• **Reportar emergencias:** escribe "denunciar" o "emergencia".';
+  }
+
+  // 4. Laws and regulations query
+  if (
+    text.includes('ley') ||
+    text.includes('leyes') ||
+    text.includes('codigo penal') ||
+    text.includes('código penal') ||
+    text.includes('normativa')
+  ) {
+    return '⚖️ **Normas de Seguridad en Bolivia:**\n\n' +
+      '• **Ley 264 (Seguridad Ciudadana):** Promueve la prevención, auxilio y cooperación policial.\n' +
+      '• **Ley 348 (Contra la Violencia hacia las Mujeres):** Garantiza protección integral. Delitos de agresión física o familiar se derivan prioritariamente a la FELCV.\n' +
+      '• **Omisión de Socorro (Art. 262 del C.P.):** Obligación penal de auxiliar en accidentes de tráfico. El Robo Agravado es penado por el Art. 331.\n\n' +
+      '¿Desea saber cómo encriptar un informe relacionado con estas infracciones?';
+  }
+
+  // 5. Vigilante Ciudadano Info Queries
   if (
     text.includes('que es') ||
     text.includes('qué es') ||

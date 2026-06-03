@@ -52,7 +52,7 @@ export default function ConsolaPolicial() {
             </div>
             <button
               onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white font-extrabold px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider transition-colors border border-red-700 shadow-sm"
+              className="bg-red-600 hover:bg-red-700 text-white font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition-all border border-red-700 shadow-md"
             >
               Salir
             </button>

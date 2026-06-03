@@ -407,7 +407,7 @@ export default function TerminalOficial() {
             </div>
             <button
               onClick={handleLogout}
-              className="bg-red-950/80 hover:bg-red-900/40 text-red-400 border border-red-900/60 rounded-xl px-2.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-all active:scale-95"
+              className="bg-red-600 hover:bg-red-700 text-white font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition-all active:scale-95 shadow-md shadow-red-950/20"
             >
               Salir
             </button>

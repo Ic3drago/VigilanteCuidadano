@@ -123,6 +123,52 @@ export default function ChatAsistente() {
           '• **Zonas:** Coña Coña, Sarco, Villa Galindo, la Chimba, etc.\n\n' +
           'Llama a esta EPI para un auxilio veloz en la zona oeste.';
       } else if (
+        lower.includes('cercan') ||
+        lower.includes('donde') ||
+        lower.includes('dónde') ||
+        lower.includes('ubicacion') ||
+        lower.includes('ubicación') ||
+        lower.includes('direccion') ||
+        lower.includes('dirección') ||
+        lower.includes('estacion') ||
+        lower.includes('estación') ||
+        lower.includes('epi')
+      ) {
+        fallbackText = '🏢 **Estaciones Policiales Integrales (EPI) en Cochabamba:**\n\n' +
+          '• **EPI Norte (Queru Queru):** 📞 **444-1234**\n' +
+          '• **EPI Central (Casco Viejo):** 📞 **444-0110**\n' +
+          '• **EPI Sur (Alalay):** 📞 **444-5678**\n' +
+          '• **EPI Este (Pacata Alta):** 📞 **444-8765**\n' +
+          '• **EPI Oeste (Coña Coña):** 📞 **444-4321**\n\n' +
+          '💡 Te aconsejamos usar el botón rojo **"Reportar Emergencia"** de la página de inicio para que el sistema localice automáticamente y asigne a la patrulla de la EPI más cercana.';
+      } else if (
+        lower.includes('pregunta') ||
+        lower.includes('que puedo') ||
+        lower.includes('qué puedo') ||
+        lower.includes('ayuda') ||
+        lower.includes('menu') ||
+        lower.includes('menú') ||
+        lower.includes('opciones')
+      ) {
+        fallbackText = '🤖 **¿En qué puedo guiarte hoy? Como tu asistente de seguridad, puedes preguntarme sobre:**\n\n' +
+          '• **EPIs zonales y números:** escribe "Queru Queru", "Zona Sur", "Centro", "Este" u "Oeste".\n' +
+          '• **El encriptado de reportes:** escribe "cifrado", "seguro" o "privacidad".\n' +
+          '• **La geolocalización de patrullas:** escribe "mapa" o "patrullas".\n' +
+          '• **Leyes de seguridad ciudadana:** escribe "leyes", "Ley 264", "Ley 348" o "Código Penal".\n' +
+          '• **Reportar emergencias:** escribe "denunciar" o "emergencia".';
+      } else if (
+        lower.includes('ley') ||
+        lower.includes('leyes') ||
+        lower.includes('codigo penal') ||
+        lower.includes('código penal') ||
+        lower.includes('normativa')
+      ) {
+        fallbackText = '⚖️ **Leyes de Seguridad en Bolivia:**\n\n' +
+          '• **Ley 264 (Seguridad Ciudadana):** Promueve la prevención, auxilio y cooperación.\n' +
+          '• **Ley 348 (Contra la Violencia Familiar/Género):** Garantiza protección integral de la mujer por medio de la FELCV.\n' +
+          '• **Código Penal (Auxilio - Art. 262):** Obligación penal de auxiliar en accidentes. Robo Agravado es sancionado por Art. 331.\n\n' +
+          '¿Deseas saber cómo encriptar un reporte sobre estas infracciones?';
+      } else if (
         lower.includes('que es') ||
         lower.includes('qué es') ||
         lower.includes('funcion') ||

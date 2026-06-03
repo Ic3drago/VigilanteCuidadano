@@ -816,7 +816,7 @@ export default function CentroDeComando() {
           </span>
           <button
             onClick={handleLogout}
-            className="bg-red-700 hover:bg-red-600 text-white font-bold px-2 py-0.5 rounded text-[8px] uppercase tracking-wider transition-colors ml-2"
+            className="bg-red-600 hover:bg-red-700 text-white font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition-all shadow-md ml-4"
           >
             Salir
           </button>
