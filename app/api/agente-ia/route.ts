@@ -10,6 +10,7 @@
  */
 
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export interface TriageResponse {
   tipo_incidente: 'ROBO_ATRACO' | 'ACCIDENTE_TRAFICO' | 'DISTURBIOS' | 'VIOLENCIA_DOMESTICA' | 'AGRESION' | 'SOSPECHOSO' | 'OTRO';
@@ -112,52 +113,77 @@ export async function POST(req: Request) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const geminiApiKey = process.env.GEMINI_API_KEY;
+    const openaiApiKey = process.env.OPENAI_API_KEY;
 
-    if (!apiKey) {
-      // Graceful fallback to local Bolivian dialect engine
-      console.log('OPENAI_API_KEY no configurada. Activando motor local NLP de despacho BOL-110.');
-      const localResult = localNlpFallback(mensaje);
-      return NextResponse.json(localResult);
+    // 1. Try Gemini API first if configured
+    if (geminiApiKey) {
+      try {
+        console.log('Iniciando triaje-IA con Gemini 1.5 Flash.');
+        const genAI = new GoogleGenerativeAI(geminiApiKey);
+        const chatModel = genAI.getGenerativeModel({ 
+          model: 'gemini-1.5-flash',
+          systemInstruction: SYSTEM_PROMPT
+        });
+
+        const result = await chatModel.generateContent({
+          contents: [{ role: 'user', parts: [{ text: mensaje }] }],
+          generationConfig: {
+            temperature: 0.1,
+            responseMimeType: 'application/json'
+          }
+        });
+
+        const responseContent = result.response.text().trim();
+        const parsedTriage: TriageResponse = JSON.parse(responseContent);
+        return NextResponse.json(parsedTriage);
+      } catch (geminiError) {
+        console.error('Error de triaje en Gemini API:', geminiError);
+        // Cascade down
+      }
     }
 
-    // Direct HTTP integration with OpenAI endpoint
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: mensaje }
-        ],
-        temperature: 0.1,
-        response_format: { type: 'json_object' }
-      })
-    });
+    // 2. Try OpenAI API if configured
+    if (openaiApiKey) {
+      try {
+        console.log('Iniciando triaje-IA con OpenAI gpt-4o-mini.');
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openaiApiKey}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+              { role: 'system', content: SYSTEM_PROMPT },
+              { role: 'user', content: mensaje }
+            ],
+            temperature: 0.1,
+            response_format: { type: 'json_object' }
+          })
+        });
 
-    if (!response.ok) {
-      console.error('Error de respuesta en OpenAI API:', response.statusText);
-      const localResult = localNlpFallback(mensaje);
-      return NextResponse.json(localResult);
+        if (response.ok) {
+          const chatData = await response.json();
+          const responseContent = chatData.choices[0].message.content.trim();
+          const parsedTriage: TriageResponse = JSON.parse(responseContent);
+          return NextResponse.json(parsedTriage);
+        }
+        console.error('Error de respuesta en OpenAI API (Triaje):', response.statusText);
+      } catch (openaiError) {
+        console.error('Error al conectar con OpenAI (Triaje):', openaiError);
+      }
     }
 
-    const chatData = await response.json();
-    const responseContent = chatData.choices[0].message.content.trim();
-
-    // Parse strictly derived JSON
-    const parsedTriage: TriageResponse = JSON.parse(responseContent);
-
-    return NextResponse.json(parsedTriage);
+    // 3. Fallback locally if no keys are found or requests fail
+    console.log('Activando motor local NLP de despacho BOL-110 (Offline Fallback).');
+    const localResult = localNlpFallback(mensaje);
+    return NextResponse.json(localResult);
 
   } catch (error) {
     console.error('API Error try/catch en Triaje-IA:', error);
     
-    // Ultimate recovery path to prevent crash (status 500 but returned as structured data if needed,
-    // or standard HTTP 500 error as requested).
     return new NextResponse(
       JSON.stringify({ error: 'Fallo al procesar el triaje del incidente por IA.' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }

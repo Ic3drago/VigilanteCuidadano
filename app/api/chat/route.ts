@@ -10,6 +10,7 @@
  */
 
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 interface IncomingMessage {
   id?: string;
@@ -229,52 +230,85 @@ export async function POST(req: Request) {
     }
 
     const lastUserMessage = messages[messages.length - 1]?.text || '';
-    const apiKey = process.env.OPENAI_API_KEY;
+    const geminiApiKey = process.env.GEMINI_API_KEY;
+    const openaiApiKey = process.env.OPENAI_API_KEY;
 
-    if (!apiKey) {
-      // Graceful contextual fallback
-      console.log('OPENAI_API_KEY no detectada en Asistente Virtual. Activando motor contextual local.');
-      const localReply = contextualNlpFallback(lastUserMessage);
-      return NextResponse.json({ reply: localReply });
+    // 1. Try Gemini API first if configured
+    if (geminiApiKey) {
+      try {
+        console.log('Iniciando respuesta del Asistente Virtual con Gemini 1.5 Flash.');
+        const genAI = new GoogleGenerativeAI(geminiApiKey);
+        const chatModel = genAI.getGenerativeModel({ 
+          model: 'gemini-1.5-flash',
+          systemInstruction: SYSTEM_PROMPT
+        });
+
+        // Format history for Gemini contents array
+        // Gemini API uses 'user' and 'model' roles. In ChatAsistente, sender is 'user' or 'bot'
+        const contents = messages.map((m: IncomingMessage) => ({
+          role: m.sender === 'user' ? 'user' : 'model',
+          parts: [{ text: m.text }]
+        }));
+
+        const result = await chatModel.generateContent({
+          contents: contents,
+          generationConfig: {
+            temperature: 0.3,
+            maxOutputTokens: 350
+          }
+        });
+
+        const replyText = result.response.text().trim();
+        return NextResponse.json({ reply: replyText });
+      } catch (geminiError) {
+        console.error('Error al generar respuesta con Gemini:', geminiError);
+        // Cascade downwards
+      }
     }
 
-    // Map conversation history to OpenAI Chat completions standard format
-    // Map 'bot' sender to 'assistant' role and 'user' sender to 'user' role
-    const formattedMessages = messages.map((m: IncomingMessage) => ({
-      role: m.sender === 'user' ? 'user' : 'assistant',
-      content: m.text
-    }));
+    // 2. Try OpenAI API if configured
+    if (openaiApiKey) {
+      try {
+        console.log('Iniciando respuesta del Asistente Virtual con OpenAI gpt-4o-mini.');
+        const formattedMessages = messages.map((m: IncomingMessage) => ({
+          role: m.sender === 'user' ? 'user' : 'assistant',
+          content: m.text
+        }));
 
-    // Inject system instructions
-    const payloadMessages = [
-      { role: 'system', content: SYSTEM_PROMPT },
-      ...formattedMessages
-    ];
+        const payloadMessages = [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...formattedMessages
+        ];
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: payloadMessages,
-        temperature: 0.3,
-        max_tokens: 300
-      })
-    });
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openaiApiKey}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: payloadMessages,
+            temperature: 0.3,
+            max_tokens: 300
+          })
+        });
 
-    if (!response.ok) {
-      console.error('Error de respuesta en OpenAI API (Chat):', response.statusText);
-      const localReply = contextualNlpFallback(lastUserMessage);
-      return NextResponse.json({ reply: localReply });
+        if (response.ok) {
+          const chatData = await response.json();
+          const replyText = chatData.choices[0].message.content.trim();
+          return NextResponse.json({ reply: replyText });
+        }
+        console.error('Error de respuesta en OpenAI API (Chat):', response.statusText);
+      } catch (openaiError) {
+        console.error('Error al conectar con OpenAI:', openaiError);
+      }
     }
 
-    const chatData = await response.json();
-    const replyText = chatData.choices[0].message.content.trim();
-
-    return NextResponse.json({ reply: replyText });
+    // 3. Fallback locally if no keys are found or requests fail
+    console.log('Activando motor contextual local (Offline Fallback) para el Asistente Virtual.');
+    const localReply = contextualNlpFallback(lastUserMessage);
+    return NextResponse.json({ reply: localReply });
 
   } catch (error) {
     console.error('Error en API Chat Handler:', error);
