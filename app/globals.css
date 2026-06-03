@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-color: #080b10;
+  --panel-bg: rgba(13, 18, 28, 0.75);
+  --border-neon: rgba(0, 255, 0, 0.2);
+  --accent-green: #00ff00;
+  --accent-red: #ff3b30;
+  --accent-blue: #007aff;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: #e2e8f0;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism effects for premium modern layout cards */
+.glass-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-neon);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel:hover {
+  border-color: rgba(0, 255, 0, 0.35);
+  box-shadow: 0 8px 32px 0 rgba(0, 255, 0, 0.05);
+}
+
+/* Chat bubble styling for the Citizen Portal */
+.chat-bubble-citizen {
+  background: #162030;
+  border: 1px solid rgba(0, 255, 0, 0.15);
+  color: #e2e8f0;
+  border-radius: 18px 18px 0px 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.chat-bubble-ai {
+  background: rgba(0, 255, 0, 0.05);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  color: #00ff00;
+  border-radius: 18px 18px 18px 0px;
+  box-shadow: 0 2px 12px rgba(0, 255, 0, 0.05);
+}
+
+/* Interactive scanline and blink cursor effects for technical aspects */
+.retro-cursor {
+  border-right: 2px solid #00ff00;
+  animation: blink 0.9s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { border-color: transparent }
+  50% { border-color: #00ff00 }
+}
+
+/* Cyberpunk pulsing warning badges */
+.glow-pulse-red {
+  box-shadow: 0 0 10px rgba(255, 59, 48, 0.4);
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 59, 48, 0.4); }
+  50% { box-shadow: 0 0 16px rgba(255, 59, 48, 0.8); }
+}
+
+.glow-pulse-green {
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+  animation: pulse-green 2.5s infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 6px rgba(0, 255, 0, 0.3); }
+  50% { box-shadow: 0 0 14px rgba(0, 255, 0, 0.7); }
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(8, 11, 16, 0.9);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 0, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 0, 0.6);
+}
