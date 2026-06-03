@@ -189,19 +189,19 @@ export default function TerminalChat() {
   };
 
   return (
-    <div className="flex flex-col h-[620px] w-full max-w-xl bg-[#0f141c] border border-green-500 border-opacity-30 rounded-2xl shadow-2xl p-4 md:p-6 overflow-hidden relative">
+    <div className="flex flex-col h-[620px] w-full max-w-xl bg-[#0f141c] border border-cyan-500 border-opacity-30 rounded-2xl shadow-2xl p-4 md:p-6 overflow-hidden relative">
       
       {/* Decorative premium header */}
-      <div className="flex items-center justify-between border-b border-green-900 border-opacity-40 pb-4 mb-4">
+      <div className="flex items-center justify-between border-b border-cyan-900 border-opacity-40 pb-4 mb-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#162030] rounded-xl border border-green-500 border-opacity-30 flex items-center justify-center">
+          <div className="w-10 h-10 bg-[#162030] rounded-xl border border-cyan-500 border-opacity-30 flex items-center justify-center">
             <span className="text-xl">🛡️</span>
           </div>
           <div>
             <h2 className="text-sm font-bold text-white tracking-wider uppercase">Portal Ciudadano Seguro</h2>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="w-2 h-2 bg-green-500 rounded-full glow-pulse-green" />
-              <span className="text-[10px] text-green-500 font-semibold tracking-wider">CANAL CIFRADO ACTIVO</span>
+              <span className="w-2 h-2 bg-cyan-500 rounded-full glow-pulse-cyan" />
+              <span className="text-[10px] text-cyan-400 font-semibold tracking-wider">CANAL CIFRADO ACTIVO</span>
             </div>
           </div>
         </div>
@@ -210,8 +210,8 @@ export default function TerminalChat() {
       {/* Main Area: Encrypt Passphrase Setup screen (if not set) */}
       {!isPassConfigured ? (
         <div className="flex-1 flex flex-col justify-center items-center p-4">
-          <div className="bg-[#141b25] border border-green-500 border-opacity-20 p-6 rounded-2xl max-w-sm w-full text-center space-y-4 shadow-lg">
-            <div className="w-16 h-16 bg-green-950 bg-opacity-40 border border-green-500 border-opacity-30 rounded-full flex items-center justify-center mx-auto text-3xl">
+          <div className="bg-[#141b25] border border-cyan-500 border-opacity-20 p-6 rounded-2xl max-w-sm w-full text-center space-y-4 shadow-lg">
+            <div className="w-16 h-16 bg-cyan-950 bg-opacity-40 border border-cyan-500 border-opacity-30 rounded-full flex items-center justify-center mx-auto text-3xl">
               🔒
             </div>
             
@@ -229,11 +229,11 @@ export default function TerminalChat() {
                 value={tempPass}
                 onChange={(e) => setTempPass(e.target.value)}
                 placeholder="Crea una clave secreta..."
-                className="w-full bg-[#0d1219] text-white border border-green-500 border-opacity-30 rounded-xl px-4 py-2 text-sm text-center outline-none focus:border-opacity-100 placeholder-green-900 transition-all font-mono"
+                className="w-full bg-[#0d1219] text-white border border-cyan-500 border-opacity-30 rounded-xl px-4 py-2 text-sm text-center outline-none focus:border-opacity-100 placeholder-cyan-900 transition-all font-mono"
               />
               <button
                 type="submit"
-                className="w-full bg-green-500 hover:bg-green-400 text-black font-bold py-2 px-4 rounded-xl text-sm transition-all focus:outline-none focus:ring-2 focus:ring-green-400 active:scale-[0.98]"
+                className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2 px-4 rounded-xl text-sm transition-all focus:outline-none focus:ring-2 focus:ring-cyan-400 active:scale-[0.98]"
               >
                 Activar Conexión Segura
               </button>
@@ -245,7 +245,7 @@ export default function TerminalChat() {
         <div className="flex-1 flex flex-col overflow-hidden">
           
           {/* Messages scrollbox */}
-          <div className="flex-1 overflow-y-auto space-y-4 pr-1 mb-4 scrollbar-thin scrollbar-thumb-green-900">
+          <div className="flex-1 overflow-y-auto space-y-4 pr-1 mb-4 scrollbar-thin scrollbar-thumb-cyan-900">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -267,8 +267,8 @@ export default function TerminalChat() {
 
                   {/* Render beautiful structured triage card if details exist */}
                   {msg.triageDetails && (
-                    <div className="mt-3 bg-[#0d1219] border border-green-500 border-opacity-20 rounded-xl p-3 space-y-2 text-xs text-slate-300">
-                      <div className="flex justify-between border-b border-green-900 border-opacity-30 pb-1.5">
+                    <div className="mt-3 bg-[#0d1219] border border-cyan-500 border-opacity-20 rounded-xl p-3 space-y-2 text-xs text-slate-300">
+                      <div className="flex justify-between border-b border-cyan-900 border-opacity-30 pb-1.5">
                         <span className="font-bold text-white">Clasificación:</span>
                         <span className="text-yellow-400 font-extrabold uppercase">{msg.triageDetails.tipo}</span>
                       </div>
@@ -280,7 +280,7 @@ export default function TerminalChat() {
                         <span className="font-bold text-white">Lugar aproximado:</span>
                         <span className="text-white font-semibold">{msg.triageDetails.ubicacion}</span>
                       </div>
-                      <div className="border-t border-green-900 border-opacity-30 pt-1.5 text-green-400 leading-relaxed font-sans">
+                      <div className="border-t border-cyan-900 border-opacity-30 pt-1.5 text-cyan-400 leading-relaxed font-sans">
                         💡 **Recomendación:** {msg.triageDetails.consejo}
                       </div>
                       <div className="text-[8px] text-slate-500 font-mono pt-1 text-right truncate">
@@ -295,38 +295,38 @@ export default function TerminalChat() {
             
             {/* Interactive processing loader card */}
             {isProcessing && (
-              <div className="bg-[#141b25] border border-green-500 border-opacity-20 rounded-2xl p-4 space-y-3 max-w-sm animate-pulse shadow-md">
+              <div className="bg-[#141b25] border border-cyan-500 border-opacity-20 rounded-2xl p-4 space-y-3 max-w-sm animate-pulse shadow-md">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping" />
                   <span className="text-xs font-bold text-yellow-400 uppercase tracking-widest">Asegurando Denuncia...</span>
                 </div>
                 <div className="space-y-1.5 text-[10px] text-slate-400 font-mono">
                   <div className="flex items-center gap-1.5">
-                    <span className={cryptoProgress.step === 'ai_triage' ? 'text-yellow-400' : 'text-green-500'}>
+                    <span className={cryptoProgress.step === 'ai_triage' ? 'text-yellow-400' : 'text-cyan-400'}>
                       {['key_kdf', 'encrypting', 'hashing', 'db_push', 'success'].includes(cryptoProgress.step) ? '✓' : '●'}
                     </span>
                     <span>1. Triaje de Emergencia NLP</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className={cryptoProgress.step === 'key_kdf' ? 'text-yellow-400' : ['encrypting', 'hashing', 'db_push', 'success'].includes(cryptoProgress.step) ? 'text-green-500' : '○'}>
+                    <span className={cryptoProgress.step === 'key_kdf' ? 'text-yellow-400' : ['encrypting', 'hashing', 'db_push', 'success'].includes(cryptoProgress.step) ? 'text-cyan-400' : '○'}>
                       {['encrypting', 'hashing', 'db_push', 'success'].includes(cryptoProgress.step) ? '✓' : '●'}
                     </span>
                     <span>2. Derivación de Clave PBKDF2</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className={cryptoProgress.step === 'encrypting' ? 'text-yellow-400' : ['hashing', 'db_push', 'success'].includes(cryptoProgress.step) ? 'text-green-500' : '○'}>
+                    <span className={cryptoProgress.step === 'encrypting' ? 'text-yellow-400' : ['hashing', 'db_push', 'success'].includes(cryptoProgress.step) ? 'text-cyan-400' : '○'}>
                       {['hashing', 'db_push', 'success'].includes(cryptoProgress.step) ? '✓' : '●'}
                     </span>
                     <span>3. Encriptación AES-GCM-256</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className={cryptoProgress.step === 'hashing' ? 'text-yellow-400' : ['db_push', 'success'].includes(cryptoProgress.step) ? 'text-green-500' : '○'}>
+                    <span className={cryptoProgress.step === 'hashing' ? 'text-yellow-400' : ['db_push', 'success'].includes(cryptoProgress.step) ? 'text-cyan-400' : '○'}>
                       {['db_push', 'success'].includes(cryptoProgress.step) ? '✓' : '●'}
                     </span>
                     <span>4. Registro de Hash SHA-256</span>
                   </div>
                 </div>
-                <div className="text-[9px] text-green-400 italic bg-[#0f141c] p-1.5 rounded border border-green-950 font-mono">
+                <div className="text-[9px] text-cyan-400 italic bg-[#0f141c] p-1.5 rounded border border-cyan-950 font-mono">
                   &gt; {cryptoProgress.details}
                 </div>
               </div>
@@ -336,7 +336,7 @@ export default function TerminalChat() {
           </div>
 
           {/* Simple and friendly text input field */}
-          <form onSubmit={handleSendMessage} className="flex gap-2 items-center bg-[#162030] border border-green-500 border-opacity-25 rounded-2xl p-2 focus-within:border-opacity-80 transition-all">
+          <form onSubmit={handleSendMessage} className="flex gap-2 items-center bg-[#162030] border border-cyan-500 border-opacity-25 rounded-2xl p-2 focus-within:border-opacity-80 transition-all">
             <input
               type="text"
               required
@@ -349,7 +349,7 @@ export default function TerminalChat() {
             <button
               type="submit"
               disabled={isProcessing}
-              className="w-10 h-10 bg-green-500 text-black hover:bg-green-400 rounded-xl flex items-center justify-center font-bold disabled:opacity-50 transition-all active:scale-95"
+              className="w-10 h-10 bg-cyan-500 text-black hover:bg-cyan-400 rounded-xl flex items-center justify-center font-bold disabled:opacity-50 transition-all active:scale-95"
             >
               ➔
             </button>

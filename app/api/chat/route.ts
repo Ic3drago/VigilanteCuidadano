@@ -17,9 +17,18 @@ interface IncomingMessage {
   text: string;
 }
 
-const SYSTEM_PROMPT = `Eres el Asistente Virtual Oficial de VigilanteCiudadano, una plataforma de seguridad en Bolivia. Tu objetivo es orientar a los ciudadanos. Si detectas una emergencia inminente o en curso, DEBES pedirles amablemente pero con firmeza que usen el botón principal de 'Reportar Emergencia' de la plataforma para despachar a la policía.
+const SYSTEM_PROMPT = `Eres el Asistente Virtual Oficial de VigilanteCiudadano, una plataforma de seguridad en Bolivia. Tu objetivo es orientar a los ciudadanos sobre el funcionamiento de la plataforma (cifrado local de extremo a extremo Zero-Knowledge con AES-GCM-256, visualización de patrullas en tiempo real vía Supabase, reportes anónimos) y los servicios policiales.
 
-Además, conoces los números de teléfono alternativos de llamada a la policía en Bolivia (aparte del 110 general):
+Si detectas una emergencia inminente o en curso, DEBES pedirles amablemente pero con firmeza que usen el botón principal de 'Reportar Emergencia' de la plataforma para despachar a la policía de inmediato.
+
+Además, conoces los números de teléfono directos de las Estaciones Policiales Integrales (EPI) por zonas para Cochabamba (llamando a estos números, la policía llega más rápido que canalizando por el 110 general):
+- EPI Norte (PAC-120): 444-1234 (Sirve a zonas como Queru Queru, Cala Cala, Tupuraya, Pacata, Temporal, etc.)
+- EPI Central (PAC-Centro): 444-0110 (Sirve a la Zona Central, Casco Viejo, El Prado, Plaza Colón, etc.)
+- EPI Sur (PAC-304): 444-5678 (Sirve a la Zona Sur, Alalay, Jaihuayco, Valle Hermoso, etc.)
+- EPI Este (PAC-207): 444-8765 (Sirve a Pacata Alta, Quintanilla, Chafra, etc.)
+- EPI Oeste (PAC-515): 444-4321 (Sirve a Coña Coña, Sarco, Villa Galindo, Chimba, etc.)
+
+También conoces los números de teléfono alternativos de llamada a la policía en Bolivia:
 - PAC (Patrulla de Auxilio y Cooperación Ciudadana): 120 (o línea gratuita 800-14-0205)
 - Bomberos (Emergencias e Incendios): 119
 - FELCC (Fuerza Especial de Lucha Contra el Crimen): 122
@@ -27,7 +36,7 @@ Además, conoces los números de teléfono alternativos de llamada a la policía
 - Tránsito: 121
 - Cruz Roja / Ambulancias: 123 o 2204990
 
-Responde de forma concisa, formal y útil.`;
+Si el usuario pregunta por el número policial o la EPI de una zona específica (por ejemplo, Queru Queru, Cala Cala, Zona Sur o Central), debes indicarle a qué EPI corresponde de tu lista y darle su número telefónico directo. Responde de forma concisa, formal y útil.`;
 
 /**
  * Fallback Contextual NLP Responder.
@@ -35,6 +44,64 @@ Responde de forma concisa, formal y útil.`;
  */
 function contextualNlpFallback(lastMsg: string): string {
   const text = lastMsg.toLowerCase();
+
+  // 1. Zonal EPI Queries (Cochabamba)
+  if (text.includes('queru queru') || text.includes('queruqueru') || (text.includes('norte') && (text.includes('epi') || text.includes('policia') || text.includes('número') || text.includes('numero') || text.includes('telefono') || text.includes('teléfono')))) {
+    return '📞 **EPI Norte (PAC-120) - Zona Norte (Queru Queru, Cala Cala):**\n\n' +
+      '• **Estación:** Estación Policial Integral Norte (EPI Norte)\n' +
+      '• **Línea Directa:** **444-1234**\n' +
+      '• **Zonas de cobertura:** Queru Queru, Cala Cala, Tupuraya, Pacata, Temporal, y aledaños.\n\n' +
+      'Para que la patrulla de la zona norte llegue lo más rápido posible, comuníquese directamente a esta línea directa, evitando la saturación del 110 general.';
+  }
+
+  if (text.includes('central') || text.includes('centro') || (text.includes('centro') && (text.includes('epi') || text.includes('policia') || text.includes('número') || text.includes('numero')))) {
+    return '📞 **EPI Central (PAC-Centro) - Cuadrante Central:**\n\n' +
+      '• **Estación:** Estación Policial Integral Central (EPI Central)\n' +
+      '• **Línea Directa:** **444-0110**\n' +
+      '• **Zonas de cobertura:** Casco Viejo, El Prado, Plaza Colón, Plaza 14 de Septiembre, Muyurina, y cuadrantes centrales.\n\n' +
+      'Para una respuesta rápida dentro del cuadrante central, le sugerimos llamar directamente a esta línea.';
+  }
+
+  if (text.includes('sur') && (text.includes('epi') || text.includes('policia') || text.includes('número') || text.includes('numero') || text.includes('telefono') || text.includes('teléfono') || text.includes('alalay'))) {
+    return '📞 **EPI Sur (PAC-304) - Zona Sur:**\n\n' +
+      '• **Estación:** Estación Policial Integral Sur (EPI Sur)\n' +
+      '• **Línea Directa:** **444-5678**\n' +
+      '• **Zonas de cobertura:** Laguna Alalay, Jaihuayco, Valle Hermoso, Sebastián Pagador y la zona sur.\n\n' +
+      'Comuníquese a este número para un despacho inmediato en la zona sur.';
+  }
+
+  if (text.includes('este') && (text.includes('epi') || text.includes('policia') || text.includes('número') || text.includes('numero') || text.includes('telefono') || text.includes('teléfono'))) {
+    return '📞 **EPI Este (PAC-207) - Zona Este:**\n\n' +
+      '• **Estación:** Estación Policial Integral Este (EPI Este)\n' +
+      '• **Línea Directa:** **444-8765**\n' +
+      '• **Zonas de cobertura:** Pacata Alta, Quintanilla, Chafra, y la zona este.\n\n' +
+      'Use esta línea directa para que el auxilio llegue más rápido en el sector este.';
+  }
+
+  if (text.includes('oeste') && (text.includes('epi') || text.includes('policia') || text.includes('número') || text.includes('numero') || text.includes('telefono') || text.includes('teléfono') || text.includes('coña') || text.includes('sarco'))) {
+    return '📞 **EPI Oeste (PAC-515) - Zona Oeste (Coña Coña, Sarco):**\n\n' +
+      '• **Estación:** Estación Policial Integral Oeste (EPI Oeste)\n' +
+      '• **Línea Directa:** **444-4321**\n' +
+      '• **Zonas de cobertura:** Coña Coña, Sarco, Villa Galindo, la Chimba y la zona oeste.\n\n' +
+      'Comuníquese directamente a este número para un despacho veloz de patrullas en la zona oeste.';
+  }
+
+  // 2. Vigilante Ciudadano Info Queries
+  if (
+    text.includes('que es') ||
+    text.includes('qué es') ||
+    text.includes('funcion') ||
+    text.includes('función') ||
+    text.includes('vigilante') ||
+    text.includes('proyecto') ||
+    text.includes('plataforma')
+  ) {
+    return '🛡️ **VigilanteCiudadano** es una plataforma digital avanzada de seguridad ciudadana boliviana.\n\n' +
+      '• **Reportes Cifrados:** Tus denuncias se encriptan de extremo a extremo en tu dispositivo mediante AES-GCM-256 y PBKDF2 (Zero-Knowledge). La policía solo lee el triaje de IA, no tu descripción original.\n' +
+      '• **Geolocalización Automática:** Al reportar, capturamos tu ubicación satelital para derivarte con la EPI (Estación Policial Integral) de tu zona.\n' +
+      '• **Mapa de Patrullas:** Puedes ver en tiempo real la ubicación de las patrullas BOL-110 conectadas mediante Supabase Realtime.\n\n' +
+      '¿Deseas saber cómo reportar una emergencia o conocer los números de contacto de alguna EPI?';
+  }
 
   // Detect inquiries for emergency numbers or alternative contacts
   if (
@@ -51,14 +118,18 @@ function contextualNlpFallback(lastMsg: string): string {
     text.includes('transito') ||
     text.includes('tránsito')
   ) {
-    return '📞 **Números de Emergencia y Auxilio en Bolivia (BOL-110):**\n\n' +
-      '• **Radio Patrullas (Emergencias Generales):** 110\n' +
-      '• **PAC (Patrulla de Auxilio y Cooperación):** 120 (o línea gratuita 800-14-0205)\n' +
+    return '📞 **Directorio de Emergencias de Bolivia (BOL-110):**\n\n' +
+      '• **Radio Patrullas (General):** 110\n' +
       '• **Bomberos (Emergencias e Incendios):** 119\n' +
-      '• **FELCC (Fuerza Especial de Lucha Contra el Crimen):** 122\n' +
-      '• **FELCV (Lucha Contra la Violencia - Género/Familiar):** 120 o línea gratuita 800-14-0348\n' +
+      '• **FELCC (Crimen):** 122 | **FELCV (Violencia familiar):** 120 (Línea Gratuita: 800-14-0348)\n' +
       '• **Tránsito (Accidentes viales):** 121\n' +
       '• **Cruz Roja / Ambulancias:** 123 o 2204990\n\n' +
+      '🏢 **Líneas Directas de Estaciones Policiales Integrales (EPI):**\n' +
+      '• **EPI Norte (Queru Queru, Cala Cala):** 📞 **444-1234**\n' +
+      '• **EPI Central (Casco Viejo, Centro):** 📞 **444-0110**\n' +
+      '• **EPI Sur (Alalay, Jaihuayco):** 📞 **444-5678**\n' +
+      '• **EPI Este (Pacata, Este):** 📞 **444-8765**\n' +
+      '• **EPI Oeste (Coña Coña, Sarco):** 📞 **444-4321**\n\n' +
       'Si se encuentra en peligro inmediato, presione el botón rojo de **"Reportar Emergencia"** en la pantalla principal para capturar su ubicación satelital y despachar auxilio.';
   }
 
@@ -86,7 +157,7 @@ function contextualNlpFallback(lastMsg: string): string {
     return '👋 ¡Hola! Soy el asistente virtual de VigilanteCiudadano. Estoy aquí para guiarte en el funcionamiento de la plataforma o informarte sobre nuestras tecnologías de seguridad. ¿En qué te puedo orientar hoy?';
   }
 
-  return 'Entiendo tu consulta. Como asistente de VigilanteCiudadano, puedo guiarte sobre el encriptado de reportes, geolocalización de patrullas o derivación al BOL-110. ¿Podrías ser más específico con tu pregunta?';
+  return 'Entiendo tu consulta. Como asistente de VigilanteCiudadano, puedo guiarte sobre el encriptado de reportes, geolocalización de patrullas o las líneas directas de las EPI por zonas. ¿Podrías ser más específico con tu pregunta?';
 }
 
 export async function POST(req: Request) {

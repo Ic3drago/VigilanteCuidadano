@@ -89,10 +89,54 @@ export default function ChatAsistente() {
       console.warn('Chat assistant fetch failed, active local fallback:', error);
       
       // Robust client-side local fallback so it remains active
-      let fallbackText = 'Entiendo tu consulta. Como asistente de VigilanteCiudadano, puedo guiarte sobre el encriptado, geolocalización de patrullas o derivación al BOL-110. ¿Podrías ser más específico?';
+      let fallbackText = 'Entiendo tu consulta. Como asistente de VigilanteCiudadano, puedo guiarte sobre el encriptado, geolocalización de patrullas, reporte de emergencias o las líneas directas de las EPI por zonas. ¿Podrías ser más específico?';
       const lower = userText.toLowerCase();
 
-      if (lower.includes('robo') || lower.includes('ayuda') || lower.includes('emergencia') || lower.includes('asalto') || lower.includes('choque')) {
+      if (lower.includes('queru queru') || lower.includes('queruqueru') || (lower.includes('norte') && (lower.includes('epi') || lower.includes('policia') || lower.includes('número') || lower.includes('numero') || lower.includes('telefono') || lower.includes('teléfono')))) {
+        fallbackText = '📞 **EPI Norte (PAC-120) - Zona Norte (Queru Queru, Cala Cala):**\n\n' +
+          '• **Estación:** Estación Policial Integral Norte (EPI Norte)\n' +
+          '• **Línea Directa:** **444-1234**\n' +
+          '• **Zonas:** Queru Queru, Cala Cala, Tupuraya, Pacata, Temporal, y aledaños.\n\n' +
+          'Llama a esta EPI para que la patrulla asignada a la zona norte llegue lo más rápido a tu ubicación.';
+      } else if (lower.includes('central') || lower.includes('centro') || (lower.includes('centro') && (lower.includes('epi') || lower.includes('policia') || lower.includes('número') || lower.includes('numero')))) {
+        fallbackText = '📞 **EPI Central (PAC-Centro) - Cuadrante Central:**\n\n' +
+          '• **Estación:** Estación Policial Integral Central (EPI Central)\n' +
+          '• **Línea Directa:** **444-0110**\n' +
+          '• **Zonas:** Casco Viejo, El Prado, Plaza Colón, Plaza 14 de Septiembre, y zonas céntricas.\n\n' +
+          'Llama a esta EPI para coordinar asistencia inmediata en el cuadrante central.';
+      } else if (lower.includes('sur') && (lower.includes('epi') || lower.includes('policia') || lower.includes('número') || lower.includes('numero') || lower.includes('alalay'))) {
+        fallbackText = '📞 **EPI Sur (PAC-304) - Zona Sur:**\n\n' +
+          '• **Estación:** Estación Policial Integral Sur (EPI Sur)\n' +
+          '• **Línea Directa:** **444-5678**\n' +
+          '• **Zonas:** Laguna Alalay, Jaihuayco, Valle Hermoso, Sebastián Pagador, etc.\n\n' +
+          'Llama a esta EPI para un despacho rápido de auxilio en la zona sur.';
+      } else if (lower.includes('este') && (lower.includes('epi') || lower.includes('policia') || lower.includes('número') || lower.includes('numero'))) {
+        fallbackText = '📞 **EPI Este (PAC-207) - Zona Este:**\n\n' +
+          '• **Estación:** Estación Policial Integral Este (EPI Este)\n' +
+          '• **Línea Directa:** **444-8765**\n' +
+          '• **Zonas:** Pacata Alta, Quintanilla, Chafra, etc.\n\n' +
+          'Llama a esta EPI para asistencia policial en el sector este.';
+      } else if (lower.includes('oeste') && (lower.includes('epi') || lower.includes('policia') || lower.includes('número') || lower.includes('numero') || lower.includes('coña') || lower.includes('sarco'))) {
+        fallbackText = '📞 **EPI Oeste (PAC-515) - Zona Oeste:**\n\n' +
+          '• **Estación:** Estación Policial Integral Oeste (EPI Oeste)\n' +
+          '• **Línea Directa:** **444-4321**\n' +
+          '• **Zonas:** Coña Coña, Sarco, Villa Galindo, la Chimba, etc.\n\n' +
+          'Llama a esta EPI para un auxilio veloz en la zona oeste.';
+      } else if (
+        lower.includes('que es') ||
+        lower.includes('qué es') ||
+        lower.includes('funcion') ||
+        lower.includes('función') ||
+        lower.includes('vigilante') ||
+        lower.includes('proyecto') ||
+        lower.includes('plataforma')
+      ) {
+        fallbackText = '🛡️ **VigilanteCiudadano** es una plataforma digital avanzada de seguridad ciudadana boliviana.\n\n' +
+          '• **Reportes Cifrados:** Tus denuncias se encriptan de extremo a extremo en tu dispositivo mediante AES-GCM-256 y PBKDF2 (Zero-Knowledge).\n' +
+          '• **Geolocalización Automática:** Al reportar, capturamos tu ubicación satelital para derivarte con la EPI (Estación Policial Integral) de tu zona.\n' +
+          '• **Mapa de Patrullas:** Puedes ver en tiempo real la ubicación de las patrullas BOL-110 conectadas mediante Supabase Realtime.\n\n' +
+          '¿Deseas saber cómo reportar una emergencia o conocer los números de contacto de alguna EPI?';
+      } else if (lower.includes('robo') || lower.includes('ayuda') || lower.includes('emergencia') || lower.includes('asalto') || lower.includes('choque')) {
         fallbackText = 'Por favor, para emergencias graves use el botón rojo de "Reportar Emergencia" en la página principal para derivarlo inmediatamente con una patrulla.';
       } else if (
         lower.includes('numero') ||
@@ -108,14 +152,18 @@ export default function ChatAsistente() {
         lower.includes('transito') ||
         lower.includes('tránsito')
       ) {
-        fallbackText = '📞 **Números de Emergencia y Auxilio en Bolivia (BOL-110):**\n\n' +
-          '• **Radio Patrullas (Emergencias Generales):** 110\n' +
-          '• **PAC (Patrulla de Auxilio y Cooperación):** 120 (o línea gratuita 800-14-0205)\n' +
+        fallbackText = '📞 **Directorio de Emergencias de Bolivia (BOL-110):**\n\n' +
+          '• **Radio Patrullas (General):** 110\n' +
           '• **Bomberos (Emergencias e Incendios):** 119\n' +
-          '• **FELCC (Fuerza Especial de Lucha Contra el Crimen):** 122\n' +
-          '• **FELCV (Lucha Contra la Violencia - Género/Familiar):** 120 o línea gratuita 800-14-0348\n' +
+          '• **FELCC (Crimen):** 122 | **FELCV (Violencia familiar):** 120 (Línea Gratuita: 800-14-0348)\n' +
           '• **Tránsito (Accidentes viales):** 121\n' +
-          '• **Cruz Roja / Ambulancias:** 123 o 2204990';
+          '• **Cruz Roja / Ambulancias:** 123 o 2204990\n\n' +
+          '🏢 **Líneas Directas de Estaciones Policiales Integrales (EPI):**\n' +
+          '• **EPI Norte (Queru Queru, Cala Cala):** 📞 **444-1234**\n' +
+          '• **EPI Central (Casco Viejo, Centro):** 📞 **444-0110**\n' +
+          '• **EPI Sur (Alalay, Jaihuayco):** 📞 **444-5678**\n' +
+          '• **EPI Este (Pacata, Este):** 📞 **444-8765**\n' +
+          '• **EPI Oeste (Coña Coña, Sarco):** 📞 **444-4321**';
       } else if (lower.includes('cifrado') || lower.includes('seguro') || lower.includes('privado')) {
         fallbackText = 'Ciframos tus reportes con AES-GCM-256 en tu dispositivo antes de transmitirlos. La policía no puede leer tu descripción original.';
       }
