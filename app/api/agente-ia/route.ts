@@ -119,10 +119,10 @@ export async function POST(req: Request) {
     // 1. Try Gemini API first if configured
     if (geminiApiKey) {
       try {
-        console.log('Iniciando triaje-IA con Gemini 1.5 Flash.');
+        console.log('Iniciando triaje-IA con Gemini 3.5 Flash.');
         const genAI = new GoogleGenerativeAI(geminiApiKey);
         const chatModel = genAI.getGenerativeModel({ 
-          model: 'gemini-1.5-flash',
+          model: 'gemini-3.5-flash',
           systemInstruction: SYSTEM_PROMPT
         });
 
