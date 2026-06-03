@@ -312,7 +312,7 @@ export default function ChatAsistente() {
               onChange={(e) => setInputValue(e.target.value)}
               disabled={isTyping}
               placeholder="Escribe tu consulta aquí..."
-              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs outline-none focus:bg-white transition-all placeholder-slate-400"
+              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs outline-none focus:bg-white transition-all placeholder-slate-400 text-black"
             />
             <button
               type="submit"
